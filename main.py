@@ -17,16 +17,15 @@ from telegraph import upload_file
 from database import Database
 
 
-UPDATE_CHANNEL = os.environ.get("UPDATE_CHANNEL", "")
-BOT_OWNER = int(os.environ["BOT_OWNER"])
-DATABASE_URL = os.environ["DATABASE_URL"]
-db = Database(DATABASE_URL, "FnTelegraphBot")
+BOT_OWNER = int(os.environ.get("BOT_OWNER"))
+DATABASE_URL = os.environ.get("DATABASE_URL")
+db = Database(DATABASE_URL, "TelegraphBot")
 
 Bot = Client(
     "Telegraph Uploader Bot V2",
-    bot_token = os.environ["BOT_TOKEN"],
-    api_id = int(os.environ["API_ID"]),
-    api_hash = os.environ["API_HASH"],
+    bot_token=os.environ.get("BOT_TOKEN"),
+    api_id=int(os.environ.get("API_ID")),
+    api_hash=os.environ.get("API_HASH")
 )
 
 START_TEXT = """**Hello {} 😌
@@ -59,17 +58,11 @@ ABOUT_TEXT = """--**About Me**-- 😎
 
 📢 **Channel :** [Fayas Noushad](https://telegram.me/FayasNoushad)
 
-👥 **Group :** [Developer Team](https://telegram.me/TheDeveloperTeam)
-
 🌐 **Source :** [👉 Click here](https://github.com/FayasNoushad/Telegraph-Uploader-Bot-V2)
 
 📝 **Language :** [Python3](https://python.org)
 
-🧰 **Framework :** [Pyrogram](https://pyrogram.org)
-
-📡 **Server :** [Heroku](https://heroku.com)"""
-
-FORCE_SUBSCRIBE_TEXT = "<code>Sorry Dear You Must Join My Updates Channel for using me 😌😉....</code>"
+🧰 **Framework :** [Pyrogram](https://pyrogram.org)"""
 
 START_BUTTONS = InlineKeyboardMarkup(
     [
@@ -191,25 +184,6 @@ async def telegraph_upload(bot, update):
     
     if not await db.is_user_exist(update.from_user.id):
 	    await db.add_user(update.from_user.id)
-    
-    if UPDATE_CHANNEL:
-        try:
-            user = await bot.get_chat_member(UPDATE_CHANNEL, update.chat.id)
-            if user.status == "kicked":
-                await update.reply_text(text="You are banned!")
-                return
-        except UserNotParticipant:
-            await update.reply_text(
-		  text=FORCE_SUBSCRIBE_TEXT,
-		  reply_markup=InlineKeyboardMarkup(
-			  [[InlineKeyboardButton(text="⚙ Join Updates Channel ⚙", url=f"https://telegram.me/{UPDATE_CHANNEL}")]]
-		  )
-	    )
-            return
-        except Exception as error:
-            print(error)
-            await update.reply_text(text="Something wrong. Contact <a href='https://telegram.me/TheFayas'>Developer</a>.", disable_web_page_preview=True)
-            return
     
     text = await update.reply_text(
         text="<code>Downloading to My Server ...</code>",
