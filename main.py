@@ -238,7 +238,7 @@ async def telegraph_upload(bot, update):
 async def broadcast(bot, update, broadcast_ids={}):
     
     all_users = await db.get_all_users()
-    broadcast_msg = update.
+    broadcast_msg = update.reply_to_message
     
     while True:
         broadcast_id = ''.join([random.choice(string.ascii_letters) for i in range(3)])
